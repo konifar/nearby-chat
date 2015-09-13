@@ -1,0 +1,52 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:elevation="4dp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    <ListView
+        android:id="@+id/list_view"
+        style="@style/ListView"
+        android:layout_below="@id/toolbar" />
+
+    <TextView
+        android:id="@+id/txt_empty"
+        style="@style/TextSub"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:gravity="center"
+        android:padding="@dimen/spacing_16dp"
+        android:text="@string/no_messages"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/txt_error"
+        style="@style/TextSub"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:gravity="center"
+        android:padding="@dimen/spacing_16dp"
+        android:text="@string/error_occured"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+
+        <include layout="@layout/part_loading" />
+    </FrameLayout>
+
+</RelativeLayout>
