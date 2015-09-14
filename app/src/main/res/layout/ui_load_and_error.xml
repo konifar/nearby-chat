@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="@layout/activity_main">
+
+    <TextView
+        android:id="@+id/txt_empty"
+        style="@style/TextSub"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="@dimen/spacing_16dp"
+        android:text="@string/no_messages"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/txt_error"
+        style="@style/TextSub"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="@dimen/spacing_16dp"
+        android:text="@string/error_occured"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <include layout="@layout/part_loading" />
+    </FrameLayout>
+</merge>

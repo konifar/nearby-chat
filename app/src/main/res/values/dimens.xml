@@ -13,4 +13,7 @@
 
     <!-- Line -->
     <dimen name="line">1dp</dimen>
+
+    <!-- Touch -->
+    <dimen name="touch_target_64dp">64dp</dimen>
 </resources>

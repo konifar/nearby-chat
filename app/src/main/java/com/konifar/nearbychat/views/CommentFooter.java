@@ -20,39 +20,41 @@ import butterknife.OnClick;
 public class CommentFooter extends LinearLayout implements TextWatcher {
 
     @Bind(R.id.btn_comment)
-    Button mBtnComment;
+    Button btnComment;
     @Bind(R.id.edit_comment)
-    EditText mEditComment;
+    EditText editComment;
 
-    private Context context;
+    private OnSendButtonClickListener listener;
 
     public CommentFooter(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.context = context;
         LayoutInflater.from(context).inflate(R.layout.ui_comment_footer, this, true);
         ButterKnife.bind(this);
 
-        mEditComment.addTextChangedListener(this);
+        editComment.addTextChangedListener(this);
     }
 
+    @SuppressWarnings("unused")
     @OnClick(R.id.btn_comment)
     public void onClickSendComment() {
-//        SendBtnClickedEvent event = new SendBtnClickedEvent(mEditComment.getText().toString());
-//        EventBus.getDefault().post(event);
+        if (listener != null && isCommentPresent()) {
+            listener.onClick(editComment.getText().toString());
+            clearText();
+        }
     }
 
-    public void clearText() {
-        mEditComment.setText("");
-        KeyboardUtils.hide(context, mEditComment);
+    private void clearText() {
+        editComment.setText("");
+        KeyboardUtils.hide(getContext(), editComment);
     }
 
-    public boolean hasCommentInInput() {
-        return !TextUtils.isEmpty(mEditComment.getText());
+    private boolean isCommentPresent() {
+        return !TextUtils.isEmpty(editComment.getText());
     }
 
     @Override
     public void afterTextChanged(Editable s) {
-        mBtnComment.setEnabled(!TextUtils.isEmpty(mEditComment.getText()));
+        btnComment.setEnabled(isCommentPresent());
     }
 
     @Override
@@ -63,6 +65,14 @@ public class CommentFooter extends LinearLayout implements TextWatcher {
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         //
+    }
+
+    public void setOnSendButtonClickListener(OnSendButtonClickListener listener) {
+        this.listener = listener;
+    }
+
+    public interface OnSendButtonClickListener {
+        void onClick(String text);
     }
 
 }

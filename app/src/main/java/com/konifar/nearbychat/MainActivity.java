@@ -12,7 +12,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -20,8 +19,11 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.messages.Message;
 import com.google.android.gms.nearby.messages.MessageListener;
+import com.google.android.gms.nearby.messages.Strategy;
+import com.konifar.nearbychat.models.pojo.MessageModel;
 import com.konifar.nearbychat.utils.AppUtils;
 import com.konifar.nearbychat.views.CommentFooter;
+import com.konifar.nearbychat.views.LoadAndErrorView;
 import com.konifar.nearbychat.views.adapters.MessagesArrayAdapter;
 
 import butterknife.Bind;
@@ -36,26 +38,20 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     @Bind(R.id.list_view)
     ListView listView;
-    @Bind(R.id.txt_empty)
-    TextView txtEmpty;
-    @Bind(R.id.loading)
-    View loading;
-    @Bind(R.id.txt_error)
-    TextView txtError;
+    @Bind(R.id.load_and_error_view)
+    LoadAndErrorView loadAndErrorView;
     @Bind(R.id.comment_footer)
     CommentFooter commentFooter;
 
     private boolean isResolvingError;
     private MessagesArrayAdapter adapter;
     private GoogleApiClient googleApiClient;
+    private Strategy strategy;
 
     private MessageListener messageListener = new MessageListener() {
         @Override
         public void onFound(Message message) {
-            Log.d(TAG, "onFound: ${message?.toString()}");
-            if (message != null) {
-                Log.d(TAG, new String(message.getContent()));
-            }
+            if (message != null) Log.d(TAG, new String(message.getContent()));
         }
     };
 
@@ -68,9 +64,29 @@ public class MainActivity extends AppCompatActivity {
 
         initApiClient();
         initListView();
+        initCommentFooter();
+    }
+
+    private void initCommentFooter() {
+        commentFooter.setOnSendButtonClickListener(text -> publish(text));
+    }
+
+    private void publish(String text) {
+        Message message = new Message(text.getBytes());
+        Nearby.Messages.publish(googleApiClient, message, strategy)
+                .setResultCallback(new NearbyResultCallback("publish()", () -> addMessage(text)));
+    }
+
+    private void addMessage(String text) {
+        adapter.add(new MessageModel(text));
     }
 
     private void initApiClient() {
+        strategy = new Strategy.Builder()
+                .setDiscoveryMode(Strategy.DISCOVERY_MODE_DEFAULT)
+                .setDistanceType(Strategy.DISCOVERY_MODE_DEFAULT)
+                .setTtlSeconds(Strategy.TTL_SECONDS_DEFAULT)
+                .build();
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Nearby.MESSAGES_API)
                 .addConnectionCallbacks(new NearbyConnectionCallbacks())
@@ -88,8 +104,17 @@ public class MainActivity extends AppCompatActivity {
         if (!googleApiClient.isConnected()) googleApiClient.connect();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (googleApiClient.isConnected()) {
+            Nearby.Messages.unsubscribe(googleApiClient, messageListener);
+        }
+        googleApiClient.disconnect();
+    }
+
     private void loadData() {
-        loading.setVisibility(View.VISIBLE);
+        loadAndErrorView.showLoading();
         listView.setVisibility(View.GONE);
     }
 
@@ -124,41 +149,42 @@ public class MainActivity extends AppCompatActivity {
             isResolvingError = false;
             if (resultCode == Activity.RESULT_OK) {
                 Log.d(TAG, "Start subscribe");
-                Nearby.Messages.subscribe(googleApiClient, messageListener);
+                subscribe();
             } else {
-                Log.d(TAG, "Failed to resolve error with code $resultCode");
+                Log.d(TAG, "Failed to resolve error with code " + resultCode);
             }
         }
     }
 
-    private void publishAndSubscribe() {
+    private void subscribe() {
         Nearby.Messages.subscribe(googleApiClient, messageListener)
-                .setResultCallback(new ErrorCheckingCallback("subscribe()"));
+                .setResultCallback(new NearbyResultCallback("subscribe()"));
     }
 
     private class NearbyConnectionCallbacks implements GoogleApiClient.ConnectionCallbacks {
         @Override
         public void onConnected(Bundle bundle) {
-            Log.d(TAG, "onConnected!");
+            Log.d(TAG, "onConnected: " + bundle);
             Nearby.Messages.getPermissionStatus(googleApiClient).setResultCallback(
-                    new ErrorCheckingCallback("getPermissionStatus", () -> publishAndSubscribe()));
+                    new NearbyResultCallback("getPermissionStatus", () -> subscribe()));
         }
 
         @Override
         public void onConnectionSuspended(int i) {
-
+            //
         }
     }
 
-    private class ErrorCheckingCallback implements ResultCallback<Status> {
+    private class NearbyResultCallback implements ResultCallback<Status> {
+
         private final String method;
         private final Runnable runOnSuccess;
 
-        private ErrorCheckingCallback(String method) {
+        private NearbyResultCallback(String method) {
             this(method, null);
         }
 
-        private ErrorCheckingCallback(String method, @Nullable Runnable runOnSuccess) {
+        private NearbyResultCallback(String method, @Nullable Runnable runOnSuccess) {
             this.method = method;
             this.runOnSuccess = runOnSuccess;
         }

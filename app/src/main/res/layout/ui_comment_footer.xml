@@ -1,28 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/touch_target_64dp"
     android:background="@color/white"
     android:padding="@dimen/spacing_8dp">
 
     <EditText
         android:id="@+id/edit_comment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/btn_comment"
-        android:layout_weight="1"
         android:hint="@string/comment_hint"
         android:maxLines="5"
+        android:textColor="@color/black"
+        android:textColorHint="@color/grey600"
         android:textSize="@dimen/text_18sp" />
 
     <Button
         android:id="@+id/btn_comment"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:enabled="false"
         android:padding="@dimen/spacing_8dp"
         android:text="@string/send"
-        android:textSize="@dimen/text_18sp" />
+        android:textColor="@color/grey600"
+        android:textSize="@dimen/text_14sp" />
 
 </RelativeLayout>

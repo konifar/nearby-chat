@@ -17,41 +17,14 @@
         android:layout_above="@+id/comment_footer"
         android:layout_below="@id/toolbar" />
 
-    <TextView
-        android:id="@+id/txt_empty"
-        style="@style/TextSub"
+    <com.konifar.nearbychat.views.LoadAndErrorView
+        android:id="@+id/load_and_error_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/comment_footer"
         android:layout_below="@id/toolbar"
-        android:gravity="center"
-        android:padding="@dimen/spacing_16dp"
-        android:text="@string/no_messages"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/txt_error"
-        style="@style/TextSub"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/comment_footer"
-        android:layout_below="@id/toolbar"
-        android:gravity="center"
-        android:padding="@dimen/spacing_16dp"
-        android:text="@string/error_occured"
-        android:visibility="gone" />
-
-    <FrameLayout
-        android:id="@+id/loading"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/comment_footer"
-        android:layout_below="@id/toolbar"
-        android:layout_centerInParent="true"
-        android:visibility="gone">
-
-        <include layout="@layout/part_loading" />
-    </FrameLayout>
+        app:emptyText="@string/no_messages"
+        app:errorText="@string/error_occured" />
 
     <com.konifar.nearbychat.views.CommentFooter
         android:id="@+id/comment_footer"

@@ -8,14 +8,14 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.konifar.nearbychat.R;
-import com.konifar.nearbychat.models.pojo.Message;
+import com.konifar.nearbychat.models.pojo.MessageModel;
 
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MessagesArrayAdapter extends ArrayAdapter<Message> {
+public class MessagesArrayAdapter extends ArrayAdapter<MessageModel> {
 
     public MessagesArrayAdapter(Context context) {
         super(context, R.layout.item_message, new ArrayList<>());
@@ -39,7 +39,7 @@ public class MessagesArrayAdapter extends ArrayAdapter<Message> {
         return view;
     }
 
-    private void bindData(ViewHolder holder, Message phrase) {
+    private void bindData(ViewHolder holder, MessageModel phrase) {
         holder.txtMessage.setText(phrase.getText());
     }
 
