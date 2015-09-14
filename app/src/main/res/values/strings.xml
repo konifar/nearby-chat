@@ -3,4 +3,6 @@
     <string name="github_repo">GitHub Repository</string>
     <string name="no_messages">No messages.</string>
     <string name="error_occured">Error occured.</string>
+    <string name="comment_hint">Input message.</string>
+    <string name="send">Send</string>
 </resources>
